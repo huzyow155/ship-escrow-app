@@ -41,7 +41,7 @@ This document provides step-by-step instructions for end-to-end manual verificat
 3. Enter PR URL: `https://github.com/huzyow155/ship-escrow-fixtures/pull/2`.
 4. Click **Fetch Head SHA from GitHub**. The input auto-fills with `5db0441e76af93606fd82feebbe49c5a2f145326` directly via public GitHub API.
 5. Click **Submit Work for Consensus**. Approve the transaction in MetaMask.
-6. Observe the live timer (evaluating diff + LLM criteria classification takes ~18–40 seconds).
+6. Observe the elapsed-seconds timer (evaluating diff + LLM criteria classification takes ~18–40 seconds).
 
 ---
 
@@ -60,7 +60,7 @@ This document provides step-by-step instructions for end-to-end manual verificat
 2. The 4 inputs (Bounty ID, Criteria Hash, Head SHA, Dev Address) are pre-populated with verified on-chain values.
 3. Click **Verify Settlement On-Chain**.
    - Result: `✓ VERIFIED: TRUE`
-4. Click the **Mutate 1 Char** button to tamper with one character in the criteria hash or head SHA.
+4. Click the **Mutate 1 Char** button to change one character in the criteria hash or head SHA.
 5. Click **Verify Settlement On-Chain** again.
    - Result: `✗ MISMATCH: FALSE`
 

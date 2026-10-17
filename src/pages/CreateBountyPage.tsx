@@ -32,7 +32,7 @@ export const CreateBountyPage: React.FC = () => {
   const [statusMsg, setStatusMsg] = useState<string | undefined>();
   const [error, setError] = useState<string>('');
 
-  // Live Criteria Hash
+  // Client-computed Criteria Hash
   const currentCriteriaHash = computeCriteriaHash(criteria, requiredPaths);
 
   // Scoring preview calculation

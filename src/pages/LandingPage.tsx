@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, AlertTriangle, Cpu } from 'lucide-react';
-import { SHIP_ESCROW, SHIP_REPUTATION } from '../config/deployments';
 
 export const LandingPage: React.FC = () => {
   return (
@@ -24,7 +23,7 @@ export const LandingPage: React.FC = () => {
               letterSpacing: '-0.5px',
             }}
           >
-            Autonomous GitHub Bounty Escrow
+            GitHub Bounty Escrow
           </h1>
           <p
             style={{
@@ -35,7 +34,7 @@ export const LandingPage: React.FC = () => {
               margin: '0 auto',
             }}
           >
-            Autonomous code bounty escrow evaluating GitHub pull request diffs against
+            On-demand code bounty escrow evaluating GitHub pull request diffs against
             human criteria via multi-validator GenLayer consensus.
           </p>
 
@@ -103,37 +102,6 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Contract Links Footer */}
-        <div
-          className="font-mono"
-          style={{
-            marginTop: '32px',
-            textAlign: 'center',
-            fontSize: '12px',
-            color: 'var(--text-muted)',
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '20px',
-            flexWrap: 'wrap',
-          }}
-        >
-          <a
-            href={SHIP_ESCROW.explorerUrl}
-            target="_blank"
-            rel="noreferrer"
-            style={{ textDecoration: 'underline', color: 'var(--text-muted)' }}
-          >
-            ShipEscrow: {SHIP_ESCROW.address.slice(0, 10)}...
-          </a>
-          <a
-            href={SHIP_REPUTATION.explorerUrl}
-            target="_blank"
-            rel="noreferrer"
-            style={{ textDecoration: 'underline', color: 'var(--text-muted)' }}
-          >
-            ShipReputation: {SHIP_REPUTATION.address.slice(0, 10)}...
-          </a>
-        </div>
       </div>
     </div>
   );
