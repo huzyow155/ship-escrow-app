@@ -4,6 +4,8 @@ Web app (Preview): https://ship-escrow-app.vercel.app
 Contract repository: https://github.com/huzyow155/ship-escrow-genlayer  
 Fixtures repository: https://github.com/huzyow155/ship-escrow-fixtures  
 
+![Ship Escrow Customs Manifest Preview](docs/design/after/landing_1440px_light.png)
+
 Web app for GitHub PR bounties on GenLayer Studionet (Preview). Credits are tracked in a contract ledger; no tokens are locked.
 
 Contracts deployed on **GenLayer Studionet Preview**:

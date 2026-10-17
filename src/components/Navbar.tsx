@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, Wallet, Ship } from 'lucide-react';
+import { Sun, Moon, Wallet, Anchor } from 'lucide-react';
 import { getBalance } from '../services/escrowRead';
 import { ensureStudionetNetwork } from '../services/reputation';
 
@@ -29,6 +29,7 @@ export const Navbar: React.FC = () => {
     try {
       await ensureStudionetNetwork();
       const ethereum = (window as any).ethereum;
+      if (!ethereum) return;
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
       if (accounts && accounts.length > 0) {
         setAccount(accounts[0]);
@@ -79,11 +80,12 @@ export const Navbar: React.FC = () => {
   return (
     <header
       style={{
-        borderBottom: '1px solid var(--border)',
+        borderBottom: '2px dashed var(--border-dashed)',
         background: 'var(--bg-card)',
         position: 'sticky',
         top: 0,
-        zIndex: 40,
+        zIndex: 50,
+        boxShadow: 'var(--shadow-sm)',
       }}
     >
       <div
@@ -92,112 +94,122 @@ export const Navbar: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          height: '64px',
-          gap: '16px',
+          minHeight: '64px',
+          paddingTop: '8px',
+          paddingBottom: '8px',
+          gap: '12px',
+          flexWrap: 'wrap',
         }}
       >
-        {/* Brand */}
+        {/* Customs Wordmark */}
         <Link
           to="/"
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
-            fontWeight: 800,
-            letterSpacing: '0.5px',
           }}
+          aria-label="Ship Escrow Homepage"
         >
-          <Ship size={24} style={{ color: 'var(--primary)' }} />
-          <span>SHIP ESCROW</span>
-          <span
-            className="badge badge-open"
-            style={{ fontSize: '10px', padding: '2px 6px' }}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px',
+              borderRadius: '4px',
+              background: 'var(--bg-card-header)',
+              border: '1px solid var(--border)',
+            }}
           >
-            Preview 61999
+            <Anchor size={18} style={{ color: 'var(--stamp-ochre)' }} />
+          </div>
+          <div>
+            <div
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '18px',
+                fontWeight: 700,
+                letterSpacing: '-0.01em',
+                lineHeight: 1.1,
+              }}
+            >
+              SHIP ESCROW
+            </div>
+            <div
+              className="font-mono"
+              style={{
+                fontSize: '9px',
+                letterSpacing: '0.12em',
+                color: 'var(--text-muted)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Customs Manifest
+            </div>
+          </div>
+          <span className="docket-tab" style={{ marginLeft: '4px' }}>
+            Studionet Preview 61999
           </span>
         </Link>
 
-        {/* Navigation Links */}
+        {/* Navigation Tabs */}
         <nav
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            fontSize: '14px',
+            gap: '4px',
+            fontSize: '13px',
             fontWeight: 600,
+            overflowX: 'auto',
+            maxWidth: '100%',
+            padding: '2px 0',
           }}
         >
-          <Link
-            to="/app"
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              background: isActive('/app') ? 'var(--bg-subtle)' : 'transparent',
-              color: isActive('/app') ? 'var(--primary)' : 'var(--text-main)',
-            }}
-          >
-            Bounties
-          </Link>
-          <Link
-            to="/app/create"
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              background: isActive('/app/create') ? 'var(--bg-subtle)' : 'transparent',
-              color: isActive('/app/create') ? 'var(--primary)' : 'var(--text-main)',
-            }}
-          >
-            New Bounty
-          </Link>
-          <Link
-            to="/app/reputation"
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              background: isActive('/app/reputation') ? 'var(--bg-subtle)' : 'transparent',
-              color: isActive('/app/reputation') ? 'var(--primary)' : 'var(--text-main)',
-            }}
-          >
-            Reputation
-          </Link>
-          <Link
-            to="/app/evidence"
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              background: isActive('/app/evidence') ? 'var(--bg-subtle)' : 'transparent',
-              color: isActive('/app/evidence') ? 'var(--primary)' : 'var(--text-main)',
-            }}
-          >
-            Evidence
-          </Link>
-          <Link
-            to="/app/limits"
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              background: isActive('/app/limits') ? 'var(--bg-subtle)' : 'transparent',
-              color: isActive('/app/limits') ? 'var(--primary)' : 'var(--text-main)',
-            }}
-          >
-            Limits
-          </Link>
+          {[
+            { path: '/app', label: 'Manifest Board' },
+            { path: '/app/create', label: 'New Docket' },
+            { path: '/app/reputation', label: 'Reputation' },
+            { path: '/app/evidence', label: 'Evidence' },
+            { path: '/app/limits', label: 'Limits' },
+          ].map((item) => {
+            const active = isActive(item.path);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                style={{
+                  padding: '6px 11px',
+                  borderRadius: '6px',
+                  background: active ? 'var(--bg-card-header)' : 'transparent',
+                  color: active ? 'var(--text-main)' : 'var(--text-muted)',
+                  border: active ? '1px solid var(--border)' : '1px solid transparent',
+                  fontFamily: 'var(--font-sans)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        {/* Right Actions: Balance, Wallet, Theme */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Right Controls: Balance, Wallet, Theme Toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {account && (
             <div
               className="font-mono"
               style={{
-                fontSize: '12px',
-                padding: '4px 10px',
-                borderRadius: '6px',
+                fontSize: '11px',
+                padding: '5px 9px',
+                borderRadius: '4px',
                 background: 'var(--bg-subtle)',
                 border: '1px solid var(--border)',
+                whiteSpace: 'nowrap',
               }}
             >
-              <span style={{ color: 'var(--text-muted)' }}>Credits: </span>
+              <span style={{ color: 'var(--text-muted)' }}>Balance: </span>
               <strong>{balance}</strong>
             </div>
           )}
@@ -205,24 +217,34 @@ export const Navbar: React.FC = () => {
           <button
             onClick={connectWallet}
             className="btn btn-secondary"
-            style={{ fontSize: '13px', padding: '6px 14px' }}
+            style={{
+              fontSize: '12px',
+              padding: '6px 12px',
+              minHeight: '36px',
+              height: '36px',
+            }}
           >
-            <Wallet size={16} />
+            <Wallet size={14} />
             <span className="font-mono">
               {account
                 ? `${account.slice(0, 6)}...${account.slice(-4)}`
-                : 'Connect Wallet'}
+                : 'Connect'}
             </span>
           </button>
 
           <button
             onClick={toggleTheme}
             className="btn btn-outline"
-            style={{ padding: '8px' }}
+            style={{
+              padding: '6px',
+              minHeight: '36px',
+              height: '36px',
+              width: '36px',
+            }}
             title="Toggle theme"
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
           </button>
         </div>
       </div>

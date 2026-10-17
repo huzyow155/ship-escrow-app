@@ -5,7 +5,18 @@ import { submitWork, cancelBounty, refundExhausted } from '../services/escrowWri
 import { Bounty, Submission, Settlement } from '../types';
 import { VerdictStamp } from '../components/VerdictStamp';
 import { StopwatchTimer } from '../components/StopwatchTimer';
-import { ArrowLeft, ExternalLink, RefreshCw, GitPullRequest, ShieldCheck, AlertCircle, Sparkles } from 'lucide-react';
+import { PayoutSplitBar } from '../components/PayoutSplitBar';
+import {
+  ArrowLeft,
+  ExternalLink,
+  RefreshCw,
+  GitPullRequest,
+  CheckCircle2,
+  XCircle,
+  Sparkles,
+  AlertCircle,
+  FileCheck2,
+} from 'lucide-react';
 
 export const BountyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -189,7 +200,7 @@ export const BountyDetailPage: React.FC = () => {
   if (!bounty) {
     return (
       <div style={{ padding: '60px 0', textAlign: 'center' }}>
-        <p style={{ color: 'var(--danger)', marginBottom: '16px' }}>Bounty not found</p>
+        <p style={{ color: 'var(--stamp-red)', marginBottom: '16px' }}>Bounty not found</p>
         <Link to="/app" className="btn btn-secondary">
           <ArrowLeft size={16} /> Back to Bounties
         </Link>
@@ -207,14 +218,12 @@ export const BountyDetailPage: React.FC = () => {
           </Link>
         </div>
 
-        {/* Bounty Overview Ticket */}
+        {/* Bounty Overview Ticket Header */}
         <div className="ticket-card" style={{ marginBottom: '24px' }}>
           <div className="ticket-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span className="font-mono" style={{ fontWeight: 800, color: 'var(--primary)', fontSize: '18px' }}>
-                #{bounty.id}
-              </span>
-              <h1 style={{ fontSize: '18px', fontWeight: 800 }}>{bounty.title}</h1>
+              <span className="docket-tab">DOCKET #{bounty.id}</span>
+              <h1 style={{ fontSize: '20px', fontWeight: 700 }}>{bounty.title}</h1>
             </div>
             <span className={`badge badge-${bounty.status.toLowerCase()}`}>
               {bounty.status}
@@ -245,33 +254,39 @@ export const BountyDetailPage: React.FC = () => {
               </div>
               <div>
                 <span style={{ color: 'var(--text-muted)' }}>Reward: </span>
-                <strong>{bounty.amount} Credits</strong>
+                <strong className="font-mono">{bounty.amount} Credits</strong>
               </div>
             </div>
 
-            {/* Criteria */}
+            {/* Criteria Ruled Checklist with MUST/SHOULD Chips */}
             <div>
-              <div style={{ fontWeight: 700, fontSize: '14px', marginBottom: '8px' }}>Acceptance Criteria:</div>
+              <div style={{ fontWeight: 700, fontSize: '13px', marginBottom: '8px', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                Acceptance Criteria Checklist:
+              </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {bounty.criteria.map((c, idx) => (
                   <div
                     key={idx}
+                    className="ruled-line"
                     style={{
                       display: 'flex',
-                      gap: '8px',
+                      gap: '10px',
                       alignItems: 'flex-start',
-                      background: 'var(--bg-subtle)',
-                      padding: '8px 12px',
-                      borderRadius: '6px',
                       fontSize: '13px',
+                      paddingBottom: '8px',
+                      marginBottom: '8px',
                     }}
                   >
                     <span
-                      className="badge"
+                      className="font-mono"
                       style={{
-                        background: c.level === 'MUST' ? 'var(--primary-faint)' : 'var(--bg-card)',
-                        color: c.level === 'MUST' ? 'var(--primary)' : 'var(--text-muted)',
-                        border: '1px solid var(--border)',
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        padding: '2px 6px',
+                        borderRadius: '3px',
+                        background: c.level === 'MUST' ? 'var(--stamp-red-faint)' : 'var(--stamp-ochre-faint)',
+                        color: c.level === 'MUST' ? 'var(--stamp-red)' : 'var(--stamp-ochre)',
+                        border: `1px solid ${c.level === 'MUST' ? 'var(--stamp-red)' : 'var(--stamp-ochre)'}`,
                       }}
                     >
                       {c.level}
@@ -285,10 +300,12 @@ export const BountyDetailPage: React.FC = () => {
             {/* Required Paths */}
             {bounty.required_paths.length > 0 && (
               <div>
-                <div style={{ fontWeight: 700, fontSize: '14px', marginBottom: '6px' }}>Required Path Prefixes:</div>
+                <div style={{ fontWeight: 700, fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                  Required Path Prefixes:
+                </div>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {bounty.required_paths.map((p, idx) => (
-                    <span key={idx} className="font-mono" style={{ background: 'var(--bg-subtle)', padding: '4px 8px', borderRadius: '4px', fontSize: '12px' }}>
+                    <span key={idx} className="font-mono" style={{ background: 'var(--bg-subtle)', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', border: '1px solid var(--border)' }}>
                       {p}
                     </span>
                   ))}
@@ -298,11 +315,11 @@ export const BountyDetailPage: React.FC = () => {
 
             {/* Creator Actions */}
             {actionError && (
-              <div style={{ color: 'var(--danger)', fontSize: '13px' }}>{actionError}</div>
+              <div style={{ color: 'var(--stamp-red)', fontSize: '13px' }}>{actionError}</div>
             )}
             <div style={{ display: 'flex', gap: '10px', paddingTop: '8px', borderTop: '1px dashed var(--border-dashed)' }}>
               {bounty.status === 'OPEN' && (
-                <button onClick={handleCancel} disabled={actionRunning} className="btn btn-outline" style={{ color: 'var(--danger)', fontSize: '13px' }}>
+                <button onClick={handleCancel} disabled={actionRunning} className="btn btn-outline" style={{ color: 'var(--stamp-red)', fontSize: '13px' }}>
                   Cancel Bounty (Refund Remaining)
                 </button>
               )}
@@ -315,28 +332,36 @@ export const BountyDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Settlement Panel (if SETTLED) */}
+        {/* Settlement Panel with PayoutSplitBar & Redesigned Verify Card */}
         {settlement && (
-          <div className="ticket-card" style={{ marginBottom: '24px', border: '1px solid var(--success)' }}>
-            <div className="ticket-header" style={{ background: 'var(--success-faint)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, color: 'var(--success)' }}>
-                <ShieldCheck size={18} />
+          <div className="ticket-card" style={{ marginBottom: '24px', border: '2px solid var(--stamp-green)' }}>
+            <div className="ticket-header" style={{ background: 'var(--stamp-green-faint)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, color: 'var(--stamp-green)' }}>
+                <CheckCircle2 size={18} />
                 <span>Bounty Settled: {settlement.verdict}</span>
               </div>
               <VerdictStamp verdict={settlement.verdict} size="sm" />
             </div>
 
             <div className="ticket-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', fontSize: '14px' }}>
-                <div>Developer Paid: <strong>{settlement.dev_amount} Credits</strong></div>
-                <div>Creator Retained: <strong>{settlement.creator_amount} Credits</strong></div>
-              </div>
+              {/* Payout Split Bar */}
+              <PayoutSplitBar settlement={settlement} />
 
-              {/* Settlement Check Tool */}
-              <div style={{ background: 'var(--bg-subtle)', padding: '16px', borderRadius: '6px', border: '1px dashed var(--border-dashed)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <strong>Settlement check (is_settled_for)</strong>
-                  <button onClick={mutateOneChar} className="btn btn-secondary" style={{ fontSize: '11px', padding: '3px 8px' }}>
+              {/* Settlement Check Tool Redesigned Verify Card */}
+              <div
+                style={{
+                  background: 'var(--bg-card-header)',
+                  padding: '16px',
+                  borderRadius: '8px',
+                  border: '1px dashed var(--border-dashed)',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <FileCheck2 size={16} style={{ color: 'var(--stamp-ochre)' }} />
+                    <strong>Settlement check (is_settled_for)</strong>
+                  </div>
+                  <button onClick={mutateOneChar} className="btn btn-secondary" style={{ fontSize: '11px', padding: '4px 10px', minHeight: '30px', height: '30px' }}>
                     <Sparkles size={12} /> Mutate 1 Char
                   </button>
                 </div>
@@ -368,21 +393,25 @@ export const BountyDetailPage: React.FC = () => {
                   />
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
                   <button onClick={handleCheckSettlement} disabled={checking} className="btn btn-secondary" style={{ fontSize: '12px' }}>
                     Verify Settlement On-Chain
                   </button>
                   {checkResult !== null && (
-                    <span
+                    <div
                       className="font-mono"
                       style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
                         fontWeight: 800,
                         fontSize: '14px',
-                        color: checkResult ? 'var(--success)' : 'var(--danger)',
+                        color: checkResult ? 'var(--stamp-green)' : 'var(--stamp-red)',
                       }}
                     >
-                      {checkResult ? '✓ VERIFIED: TRUE' : '✗ MISMATCH: FALSE'}
-                    </span>
+                      {checkResult ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
+                      <span>{checkResult ? '✓ VERIFIED: TRUE' : '✗ MISMATCH: FALSE'}</span>
+                    </div>
                   )}
                 </div>
               </div>
@@ -390,14 +419,14 @@ export const BountyDetailPage: React.FC = () => {
           </div>
         )}
 
-        {/* Submissions Section */}
+        {/* Submissions Section: Vertical Timeline */}
         <div className="ticket-card" style={{ marginBottom: '24px' }}>
           <div className="ticket-header">
             <span style={{ fontWeight: 700 }}>Submission Records ({submissions.length})</span>
             <button
               onClick={loadAll}
               className="btn btn-secondary"
-              style={{ padding: '4px 8px', fontSize: '11px' }}
+              style={{ padding: '4px 8px', fontSize: '11px', minHeight: '30px', height: '30px' }}
               aria-label="Refresh submissions list"
             >
               <RefreshCw size={12} />
@@ -406,17 +435,18 @@ export const BountyDetailPage: React.FC = () => {
 
           <div className="ticket-body">
             {submissions.length === 0 ? (
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No submissions evaluated yet.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>No submissions evaluated yet.</p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 {submissions.map((sub) => (
                   <div
                     key={sub.id}
                     style={{
                       border: '1px solid var(--border)',
+                      borderLeft: '4px solid var(--stamp-ochre)',
                       borderRadius: '6px',
-                      padding: '16px',
-                      background: 'var(--bg-subtle)',
+                      padding: '14px 16px',
+                      background: 'var(--bg-card)',
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
@@ -425,7 +455,7 @@ export const BountyDetailPage: React.FC = () => {
                     }}
                   >
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                         <span className="font-mono" style={{ fontWeight: 800 }}>Attempt #{sub.attempt}</span>
                         <a
                           href={sub.pr_url}
@@ -436,11 +466,11 @@ export const BountyDetailPage: React.FC = () => {
                           PR #{sub.pr_number} <ExternalLink size={12} />
                         </a>
                       </div>
-                      <div className="font-mono" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                        Dev: {sub.dev.slice(0, 8)}... | Head: {sub.head_sha.slice(0, 8)}...
+                      <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                        Dev: {sub.dev.slice(0, 8)}... | Head: {sub.head_sha.slice(0, 8)}... | Evidence: {sub.evidence_sha16 || 'n/a'}
                       </div>
                       {sub.gate && (
-                        <div style={{ fontSize: '12px', color: 'var(--warning)', marginTop: '4px' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--stamp-ochre)', marginTop: '4px' }}>
                           Hard Gate: <strong>{sub.gate}</strong>
                         </div>
                       )}
@@ -459,7 +489,7 @@ export const BountyDetailPage: React.FC = () => {
           <div className="ticket-card">
             <div className="ticket-header">
               <span style={{ fontWeight: 700 }}>Submit Pull Request Work</span>
-              <span className="font-mono" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+              <span className="docket-tab">
                 Attempt {parseInt(bounty.attempts, 10) + 1} of 3
               </span>
             </div>
@@ -470,14 +500,15 @@ export const BountyDetailPage: React.FC = () => {
                   style={{
                     padding: '10px 14px',
                     borderRadius: '6px',
-                    background: 'var(--danger-faint)',
-                    color: 'var(--danger)',
-                    border: '1px solid var(--danger)',
+                    background: 'var(--stamp-red-faint)',
+                    color: 'var(--stamp-red)',
+                    border: '1px solid var(--stamp-red)',
                     fontSize: '13px',
                     display: 'flex',
                     gap: '8px',
                     alignItems: 'center',
                   }}
+                  role="alert"
                 >
                   <AlertCircle size={15} />
                   <span>{submitError}</span>
@@ -508,7 +539,7 @@ export const BountyDetailPage: React.FC = () => {
                     onClick={fetchHeadShaFromGithub}
                     disabled={fetchingSha}
                     className="btn btn-secondary"
-                    style={{ fontSize: '11px', padding: '3px 8px' }}
+                    style={{ fontSize: '11px', padding: '3px 8px', minHeight: '28px', height: '28px' }}
                   >
                     <GitPullRequest size={12} />
                     {fetchingSha ? 'Fetching...' : 'Get head sha from GitHub'}
@@ -525,11 +556,11 @@ export const BountyDetailPage: React.FC = () => {
                 />
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px', flexWrap: 'wrap', gap: '10px' }}>
                 {submitting ? (
                   <StopwatchTimer seconds={elapsed} statusMessage={statusMsg} />
                 ) : (
-                  <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>
+                  <span className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                     Evaluation round takes ~15 - 45s on Studionet
                   </span>
                 )}

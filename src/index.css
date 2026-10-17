@@ -1,45 +1,129 @@
+/* ==========================================================================
+   Ship Escrow Manifest Design System ("Customs Manifest" & "Night Ledger")
+   ========================================================================== */
+
 :root {
-  --bg-main: #f8fafc;
-  --bg-card: #ffffff;
-  --bg-subtle: #f1f5f9;
-  --border: #cbd5e1;
-  --border-dashed: #94a3b8;
-  --text-main: #0f172a;
-  --text-muted: #334155;
-  --text-faint: #475569;
-  --primary: #0369a1;
-  --primary-hover: #075985;
-  --primary-faint: rgba(3, 105, 161, 0.08);
-  --success: #15803d;
-  --success-faint: rgba(21, 128, 61, 0.1);
-  --warning: #b45309;
-  --warning-faint: rgba(180, 83, 9, 0.1);
-  --danger: #b91c1c;
-  --danger-faint: rgba(185, 28, 28, 0.1);
-  --mono: ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, monospace;
-  --sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --stamp-rotate: -3deg;
+  /* Customs Manifest Light Palette */
+  --bg-main: #F4EEE1;
+  --bg-card: #FAF6EE;
+  --bg-card-header: #EFE8D8;
+  --bg-subtle: #EDE5D5;
+  --border: #DCD5C8;
+  --border-dashed: #B5ABA0;
+  --border-subtle: #E8E1D2;
+
+  --text-main: #14213D;
+  --text-muted: #455068;
+  --text-faint: #5C667E;
+
+  /* Stamp Colors */
+  --stamp-red: #B3261E;
+  --stamp-red-faint: rgba(179, 38, 30, 0.08);
+  --stamp-green: #235C40;
+  --stamp-green-faint: rgba(35, 92, 64, 0.08);
+  --stamp-ochre: #8C5A00;
+  --stamp-ochre-faint: rgba(140, 90, 0, 0.08);
+  --stamp-solid-text: #FFFFFF;
+
+  /* Functional UI */
+  --btn-primary-bg: #14213D;
+  --btn-primary-text: #F4EEE1;
+  --btn-primary-hover: #1E315B;
+  --btn-secondary-bg: #EFE8D8;
+  --btn-secondary-text: #14213D;
+  --btn-secondary-border: #DCD5C8;
+  --btn-secondary-hover: #E6DECE;
+
+  /* Typography */
+  --font-display: 'Newsreader', 'Times New Roman', Garamond, serif;
+  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Shadows & Geometry */
+  --shadow-sm: 0 1px 3px rgba(20, 33, 61, 0.05);
+  --shadow-card: 0 2px 6px rgba(20, 33, 61, 0.06), 0 8px 24px rgba(20, 33, 61, 0.04);
+  --shadow-docket: 0 4px 14px rgba(20, 33, 61, 0.08);
+  --radius-card: 12px;
+  --radius-pill: 9999px;
+
+  --stamp-rotate: -2.5deg;
 }
 
-[data-theme='dark'] {
-  --bg-main: #0a0e17;
-  --bg-card: #111726;
-  --bg-subtle: #192236;
-  --border: #222f47;
-  --border-dashed: #2e3e5c;
-  --text-main: #f8fafc;
-  --text-muted: #cbd5e1;
-  --text-faint: #94a3b8;
-  --primary: #38bdf8;
-  --primary-hover: #0ea5e9;
-  --primary-faint: rgba(56, 189, 248, 0.12);
-  --success: #4ade80;
-  --success-faint: rgba(74, 222, 128, 0.12);
-  --warning: #fbbf24;
-  --warning-faint: rgba(251, 191, 36, 0.12);
-  --danger: #f87171;
-  --danger-faint: rgba(248, 113, 113, 0.12);
+/* Guarded OS Dark Scheme */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-main: #0E1420;
+    --bg-card: #151D2C;
+    --bg-card-header: #1B2436;
+    --bg-subtle: #1C2638;
+    --border: #273347;
+    --border-dashed: #3A4963;
+    --border-subtle: #1F2A3D;
+
+    --text-main: #F0EAE1;
+    --text-muted: #B0B9C8;
+    --text-faint: #8D97AB;
+
+    --stamp-red: #F26C63;
+    --stamp-red-faint: rgba(242, 108, 99, 0.12);
+    --stamp-green: #4BB77E;
+    --stamp-green-faint: rgba(75, 183, 126, 0.12);
+    --stamp-ochre: #E5AD38;
+    --stamp-ochre-faint: rgba(229, 173, 56, 0.12);
+    --stamp-solid-text: #0E1420;
+
+    --btn-primary-bg: #F0EAE1;
+    --btn-primary-text: #0E1420;
+    --btn-primary-hover: #FFFFFF;
+    --btn-secondary-bg: #1B2436;
+    --btn-secondary-text: #F0EAE1;
+    --btn-secondary-border: #273347;
+    --btn-secondary-hover: #232E44;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-docket: 0 6px 20px rgba(0, 0, 0, 0.5);
+  }
 }
+
+/* Explicit Dark Scheme */
+:root[data-theme="dark"] {
+  --bg-main: #0E1420;
+  --bg-card: #151D2C;
+  --bg-card-header: #1B2436;
+  --bg-subtle: #1C2638;
+  --border: #273347;
+  --border-dashed: #3A4963;
+  --border-subtle: #1F2A3D;
+
+  --text-main: #F0EAE1;
+  --text-muted: #B0B9C8;
+  --text-faint: #8D97AB;
+
+  --stamp-red: #F26C63;
+  --stamp-red-faint: rgba(242, 108, 99, 0.12);
+  --stamp-green: #4BB77E;
+  --stamp-green-faint: rgba(75, 183, 126, 0.12);
+  --stamp-ochre: #E5AD38;
+  --stamp-ochre-faint: rgba(229, 173, 56, 0.12);
+  --stamp-solid-text: #0E1420;
+
+  --btn-primary-bg: #F0EAE1;
+  --btn-primary-text: #0E1420;
+  --btn-primary-hover: #FFFFFF;
+  --btn-secondary-bg: #1B2436;
+  --btn-secondary-text: #F0EAE1;
+  --btn-secondary-border: #273347;
+  --btn-secondary-hover: #232E44;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-docket: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Base Styles & Reset
+   ========================================================================== */
 
 * {
   box-sizing: border-box;
@@ -48,17 +132,33 @@
 }
 
 body {
-  font-family: var(--sans);
+  font-family: var(--font-sans);
   background-color: var(--bg-main);
   color: var(--text-main);
-  line-height: 1.5;
+  line-height: 1.55;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(var(--border-subtle) 0.75px, transparent 0.75px);
+  background-size: 24px 24px;
 }
 
-code, pre, .font-mono {
-  font-family: var(--mono);
+/* Real Type Scale */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-main);
 }
 
 a {
@@ -71,154 +171,222 @@ button {
   font-family: inherit;
   border: none;
   background: none;
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 2px solid var(--stamp-ochre);
+  outline-offset: 3px;
 }
 
 /* Container */
 .container {
-  max-width: 1100px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 0 16px;
 }
 
-/* Manifest Card / Job Ticket */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 14px;
+  }
+}
+
+/* ==========================================================================
+   Manifest Card / Customs Docket Styling
+   ========================================================================== */
+
 .ticket-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
   position: relative;
   overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* Perforated stitched docket header */
 .ticket-header {
-  border-bottom: 1px dashed var(--border-dashed);
+  border-bottom: 2px dashed var(--border-dashed);
   padding: 14px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--bg-subtle);
+  background: var(--bg-card-header);
+  position: relative;
 }
 
 .ticket-body {
-  padding: 20px 18px;
+  padding: 20px 20px;
 }
 
-/* Big Stamp / Seal for Verdicts */
+/* Docket number pill / tab */
+.docket-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+/* Ruled Form Lines */
+.ruled-line {
+  border-bottom: 1px dashed var(--border-subtle);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   Verdict Rubber Stamps (Rectangular / Circular Double-Border)
+   ========================================================================== */
+
 .stamp-seal {
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px;
-  border: 3px double currentColor;
-  border-radius: 6px;
-  font-family: var(--mono);
+  gap: 6px;
+  font-family: var(--font-mono);
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  transform: rotate(var(--stamp-rotate));
+  letter-spacing: 0.12em;
   user-select: none;
+  transform: rotate(var(--stamp-rotate));
+  transform-origin: center;
+  border-radius: 3px;
+  position: relative;
+  animation: stampSettle 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
-.stamp-release-100 {
-  color: var(--success);
-  background: var(--success-faint);
-  border-color: var(--success);
+@keyframes stampSettle {
+  0% {
+    transform: scale(1.35) rotate(-8deg);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1) rotate(var(--stamp-rotate));
+    opacity: 1;
+  }
 }
 
-.stamp-release-75, .stamp-release-50, .stamp-release-25 {
-  color: var(--primary);
-  background: var(--primary-faint);
-  border-color: var(--primary);
+@media (prefers-reduced-motion: reduce) {
+  .stamp-seal {
+    animation: none !important;
+  }
 }
 
+/* Release Family: Bold Green Box Stamp */
+.stamp-release-100, .stamp-release-75, .stamp-release-50, .stamp-release-25 {
+  color: var(--stamp-green);
+  background: var(--stamp-green-faint);
+  border: 3px double var(--stamp-green);
+  box-shadow: inset 0 0 0 1px var(--stamp-green-faint);
+}
+
+/* Refund Family: Bold Red Box Stamp */
 .stamp-refund {
-  color: var(--danger);
-  background: var(--danger-faint);
-  border-color: var(--danger);
+  color: var(--stamp-red);
+  background: var(--stamp-red-faint);
+  border: 3px double var(--stamp-red);
+  box-shadow: inset 0 0 0 1px var(--stamp-red-faint);
 }
 
+/* Review Family: Ochre Hatched / Notched Stamp */
 .stamp-review {
-  color: var(--warning);
-  background: var(--warning-faint);
-  border-color: var(--warning);
+  color: var(--stamp-ochre);
+  background: var(--stamp-ochre-faint);
+  border: 2px dashed var(--stamp-ochre);
+  outline: 1px solid var(--stamp-ochre);
+  outline-offset: 2px;
 }
 
-/* Badges */
+/* Status Badges */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
+  gap: 5px;
+  padding: 4px 9px;
   border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .badge-open {
-  background: var(--primary-faint);
-  color: var(--primary);
-  border: 1px solid var(--primary);
+  background: var(--stamp-ochre-faint);
+  color: var(--stamp-ochre);
+  border: 1px solid var(--stamp-ochre);
 }
 
 .badge-settled {
-  background: var(--success-faint);
-  color: var(--success);
-  border: 1px solid var(--success);
+  background: var(--stamp-green-faint);
+  color: var(--stamp-green);
+  border: 1px solid var(--stamp-green);
 }
 
 .badge-exhausted {
-  background: var(--warning-faint);
-  color: var(--warning);
-  border: 1px solid var(--warning);
+  background: var(--stamp-ochre-faint);
+  color: var(--stamp-ochre);
+  border: 1px solid var(--stamp-ochre);
 }
 
 .badge-refunded, .badge-cancelled {
-  background: var(--danger-faint);
-  color: var(--danger);
-  border: 1px solid var(--danger);
+  background: var(--stamp-red-faint);
+  color: var(--stamp-red);
+  border: 1px solid var(--stamp-red);
 }
 
-/* Buttons */
+/* ==========================================================================
+   Buttons & Interactive Controls (Touch targets >= 44px)
+   ========================================================================== */
+
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 44px;
   padding: 10px 18px;
   border-radius: 6px;
   font-weight: 600;
   font-size: 14px;
   transition: all 0.15s ease;
+  user-select: none;
 }
 
 .btn-primary {
-  background: var(--primary);
-  color: #ffffff;
-}
-
-[data-theme='dark'] .btn-primary {
-  color: #0a0e17;
-  font-weight: 700;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
-  background: var(--primary-hover);
+  background: var(--btn-primary-hover);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: var(--bg-subtle);
-  color: var(--text-main);
-  border: 1px solid var(--border);
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
 }
 
 .btn-secondary:hover {
-  background: var(--border);
+  background: var(--border-subtle);
 }
 
 .btn-danger {
-  background: var(--danger);
-  color: #ffffff;
+  background: var(--stamp-red);
+  color: #FFFFFF;
 }
 
 .btn-danger:hover {
@@ -228,6 +396,7 @@ button {
 .btn-outline {
   border: 1px solid var(--border);
   color: var(--text-main);
+  background: transparent;
 }
 
 .btn-outline:hover {
@@ -235,13 +404,15 @@ button {
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+  transform: none !important;
 }
 
-/* Inputs */
+/* Inputs & Form Elements */
 .input, .select, .textarea {
   width: 100%;
+  min-height: 44px;
   padding: 10px 14px;
   border-radius: 6px;
   border: 1px solid var(--border);
@@ -249,42 +420,93 @@ button {
   color: var(--text-main);
   font-size: 14px;
   font-family: inherit;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .input:focus, .select:focus, .textarea:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--stamp-ochre);
+  box-shadow: 0 0 0 3px var(--stamp-ochre-faint);
 }
 
-/* Table */
+/* ==========================================================================
+   Table & Manifest Ledger
+   ========================================================================== */
+
 .table-container {
   width: 100%;
   overflow-x: auto;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 8px;
+  background: var(--bg-card);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 th {
-  background: var(--bg-subtle);
-  padding: 10px 14px;
-  font-weight: 600;
-  border-bottom: 1px solid var(--border);
+  background: var(--bg-card-header);
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 2px dashed var(--border-dashed);
   color: var(--text-muted);
 }
 
 td {
   padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 tr:last-child td {
   border-bottom: none;
+}
+
+tr:hover td {
+  background: var(--bg-subtle);
+}
+
+/* Payout Split Horizontal Bar */
+.payout-split-bar {
+  display: flex;
+  height: 18px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  margin-top: 8px;
+}
+
+.payout-split-segment {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+/* Fade Transitions (At most 200ms) */
+.page-fade {
+  animation: pageFade 0.18s ease-in-out both;
+}
+
+@keyframes pageFade {
+  from {
+    opacity: 0.85;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-fade {
+    animation: none !important;
+  }
 }

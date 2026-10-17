@@ -16,7 +16,7 @@ export const App: React.FC = () => {
     <BrowserRouter>
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Navbar />
-        <main style={{ flex: 1 }}>
+        <main style={{ flex: 1 }} className="page-fade">
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/app" element={<BountyBoardPage />} />
@@ -30,12 +30,12 @@ export const App: React.FC = () => {
         </main>
         <footer
           style={{
-            borderTop: '1px solid var(--border)',
-            padding: '20px 0',
+            borderTop: '2px dashed var(--border-dashed)',
+            padding: '24px 0',
             textAlign: 'center',
             fontSize: '12px',
             color: 'var(--text-muted)',
-            background: 'var(--bg-card)',
+            background: 'var(--bg-card-header)',
           }}
         >
           <div className="container font-mono" style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>

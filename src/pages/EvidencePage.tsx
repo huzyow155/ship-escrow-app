@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, CheckCircle, ShieldAlert, Cpu, GitCommit } from 'lucide-react';
+import { ExternalLink, CheckCircle2, ShieldAlert, Cpu, GitCommit, Copy, Check } from 'lucide-react';
 import { VerdictStamp } from '../components/VerdictStamp';
 
 export const EvidencePage: React.FC = () => {
   const [evidence, setEvidence] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [copiedHash, setCopiedHash] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/evidence.json')
@@ -19,6 +20,12 @@ export const EvidencePage: React.FC = () => {
       });
   }, []);
 
+  const copyHash = (hash: string) => {
+    navigator.clipboard.writeText(hash);
+    setCopiedHash(hash);
+    setTimeout(() => setCopiedHash(null), 2000);
+  };
+
   if (loading || !evidence) {
     return (
       <div style={{ padding: '60px 0', textAlign: 'center' }}>
@@ -30,20 +37,23 @@ export const EvidencePage: React.FC = () => {
   return (
     <div style={{ padding: '30px 0 60px 0' }}>
       <div className="container">
-        <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '20px' }}>
-          Consensus Evidence & Pre-Registration
-        </h1>
+        <div style={{ marginBottom: '22px' }}>
+          <div className="docket-tab" style={{ marginBottom: '4px' }}>EMPIRICAL AUDIT</div>
+          <h1 style={{ fontSize: '26px', fontWeight: 700 }}>Consensus Evidence</h1>
+        </div>
 
-        {/* F1 - F5 Pre-Registration vs Actual Results Table */}
+        {/* F1 - F5 Pre-Registration vs Actual Results Table (Collapses to cards on mobile) */}
         <div className="ticket-card" style={{ marginBottom: '24px' }}>
           <div className="ticket-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700 }}>
-              <GitCommit size={16} style={{ color: 'var(--primary)' }} />
-              <span>Fixtures F1–F5: Pre-Registration (Commit e266765) vs Studionet</span>
+              <GitCommit size={16} style={{ color: 'var(--stamp-ochre)' }} />
+              <span>Fixtures F1–F5: Pre-Registration (e266765) vs Studionet</span>
             </div>
+            <span className="docket-tab">Receipts</span>
           </div>
 
           <div className="ticket-body" style={{ padding: '0' }}>
+            {/* Desktop Table View */}
             <div className="table-container" style={{ border: 'none', borderRadius: 0 }}>
               <table>
                 <thead>
@@ -72,20 +82,31 @@ export const EvidencePage: React.FC = () => {
                         <VerdictStamp verdict={f.actualVerdict} size="sm" />
                       </td>
                       <td>
-                        <span style={{ color: 'var(--success)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <CheckCircle size={14} /> YES
+                        <span style={{ color: 'var(--stamp-green)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <CheckCircle2 size={14} /> YES MATCH
                         </span>
                       </td>
                       <td>
-                        <a
-                          href={f.explorerUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="font-mono"
-                          style={{ display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'underline', fontSize: '12px' }}
-                        >
-                          {f.txHash.slice(0, 10)}... <ExternalLink size={11} />
-                        </a>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <a
+                            href={f.explorerUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-mono"
+                            style={{ display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'underline', fontSize: '12px' }}
+                          >
+                            {f.txHash.slice(0, 8)}... <ExternalLink size={11} />
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => copyHash(f.txHash)}
+                            className="btn btn-outline"
+                            style={{ padding: '3px 6px', minHeight: '24px', height: '24px' }}
+                            title="Copy transaction hash"
+                          >
+                            {copiedHash === f.txHash ? <Check size={11} style={{ color: 'var(--stamp-green)' }} /> : <Copy size={11} />}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -95,35 +116,44 @@ export const EvidencePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Empirical Findings Highlights */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-          {/* F3 Gate Only */}
+        {/* 3 Findings Callout Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '24px' }}>
           <div className="ticket-card">
             <div className="ticket-header">
-              <span style={{ fontWeight: 700 }}>F3 Anti-CI Gaming</span>
-              <Cpu size={16} style={{ color: 'var(--warning)' }} />
+              <span style={{ fontWeight: 700 }}>1. Gate Exits Skip Model</span>
+              <Cpu size={16} style={{ color: 'var(--stamp-green)' }} />
             </div>
-            <div className="ticket-body" style={{ fontSize: '13px' }}>
-              <p>Hard gate fired (test_deleted); LLM not invoked.</p>
+            <div className="ticket-body" style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+              Deterministic path checks exit immediately when required files are untouched, bypassing model execution.
             </div>
           </div>
 
-          {/* F5 Prompt Injection */}
           <div className="ticket-card">
             <div className="ticket-header">
-              <span style={{ fontWeight: 700 }}>F5 Injection Defense</span>
-              <ShieldAlert size={16} style={{ color: 'var(--danger)' }} />
+              <span style={{ fontWeight: 700 }}>2. Injection Ignored</span>
+              <ShieldAlert size={16} style={{ color: 'var(--stamp-ochre)' }} />
             </div>
-            <div className="ticket-body" style={{ fontSize: '13px' }}>
-              <p>Injection ignored; verdict REFUND from MUST NO. Model labels not stored.</p>
+            <div className="ticket-body" style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+              Diff prompt injection attempts are neutralized by strict schema validation and consensus voting.
+            </div>
+          </div>
+
+          <div className="ticket-card">
+            <div className="ticket-header">
+              <span style={{ fontWeight: 700 }}>3. Duplicate Head SHA Blocked</span>
+              <CheckCircle2 size={16} style={{ color: 'var(--stamp-red)' }} />
+            </div>
+            <div className="ticket-body" style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+              Submitting identical commit hashes on the same bounty is rejected on-chain by the contract.
             </div>
           </div>
         </div>
 
-        {/* Error Cases & Lifecycle Records */}
+        {/* Edge Cases Table */}
         <div className="ticket-card">
           <div className="ticket-header">
             <span style={{ fontWeight: 700 }}>Verified Edge Cases</span>
+            <span className="docket-tab">Reverts</span>
           </div>
 
           <div className="ticket-body" style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
@@ -136,13 +166,6 @@ export const EvidencePage: React.FC = () => {
                   </li>
                 ))}
               </ul>
-            </div>
-
-            <div>
-              <strong>Case G &amp; H &amp; L:</strong>
-              <p style={{ color: 'var(--text-muted)', marginTop: '2px' }}>
-                Duplicate SHA blocked; 3 attempts exhausted refunded; duplicate sync rejected.
-              </p>
             </div>
           </div>
         </div>

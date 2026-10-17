@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getStats, listBounties, getBounty } from '../services/escrowRead';
 import { Bounty, EscrowStats, BountyStatus } from '../types';
-import { Plus, RefreshCw, FolderGit2 } from 'lucide-react';
+import { Plus, RefreshCw, FolderGit2, Inbox } from 'lucide-react';
 
 export const BountyBoardPage: React.FC = () => {
   const [stats, setStats] = useState<EscrowStats | null>(null);
@@ -39,10 +39,43 @@ export const BountyBoardPage: React.FC = () => {
     return b.status === filter;
   });
 
+  const getStatusCount = (st: 'ALL' | BountyStatus) => {
+    if (st === 'ALL') return bounties.length;
+    if (stats) {
+      if (st === 'OPEN') return stats.open;
+      if (st === 'SETTLED') return stats.settled;
+      if (st === 'CANCELLED') return stats.cancelled;
+      if (st === 'EXHAUSTED') return stats.exhausted;
+    }
+    return bounties.filter((b) => b.status === st).length;
+  };
+
+  const renderAttemptDots = (attemptsStr: string) => {
+    const attempts = parseInt(attemptsStr || '0', 10);
+    return (
+      <span className="font-mono" style={{ display: 'inline-flex', gap: '3px', alignItems: 'center' }}>
+        {[1, 2, 3].map((num) => (
+          <span
+            key={num}
+            style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: num <= attempts ? 'var(--stamp-ochre)' : 'transparent',
+              border: `1.5px solid ${num <= attempts ? 'var(--stamp-ochre)' : 'var(--border-dashed)'}`,
+              display: 'inline-block',
+            }}
+            title={`Attempt ${num}: ${num <= attempts ? 'Evaluated' : 'Available'}`}
+          />
+        ))}
+      </span>
+    );
+  };
+
   return (
     <div style={{ padding: '30px 0 60px 0' }}>
       <div className="container">
-        {/* Top Control Bar: Title & Stats */}
+        {/* Header Controls */}
         <div
           style={{
             display: 'flex',
@@ -54,7 +87,8 @@ export const BountyBoardPage: React.FC = () => {
           }}
         >
           <div>
-            <h1 style={{ fontSize: '24px', fontWeight: 800 }}>Manifest Bounties</h1>
+            <div className="docket-tab" style={{ marginBottom: '4px' }}>CUSTOMS REGISTRY</div>
+            <h1 style={{ fontSize: '26px', fontWeight: 700 }}>Manifest Bounties</h1>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button onClick={loadData} className="btn btn-secondary" disabled={loading} title="Refresh on-chain state">
@@ -68,76 +102,75 @@ export const BountyBoardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Aggregate Stats Bar */}
+        {/* Docket Tabs Stat Strip from get_stats */}
         {stats && (
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-              gap: '10px',
-              marginBottom: '24px',
+              gap: '12px',
+              marginBottom: '22px',
             }}
           >
-            <div className="ticket-card" style={{ padding: '12px', textAlign: 'center' }}>
-              <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>OPEN</div>
-              <div className="font-mono" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--primary)' }}>
-                {stats.open}
+            {[
+              { label: 'OPEN DOCKETS', count: stats.open, color: 'var(--stamp-ochre)' },
+              { label: 'SETTLED', count: stats.settled, color: 'var(--stamp-green)' },
+              { label: 'CANCELLED', count: stats.cancelled, color: 'var(--stamp-red)' },
+              { label: 'EXHAUSTED', count: stats.exhausted, color: 'var(--stamp-ochre)' },
+            ].map((tab) => (
+              <div
+                key={tab.label}
+                className="ticket-card"
+                style={{
+                  padding: '12px 14px',
+                  textAlign: 'center',
+                  background: 'var(--bg-card)',
+                  borderTop: `3px solid ${tab.color}`,
+                }}
+              >
+                <div className="font-mono" style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>
+                  {tab.label}
+                </div>
+                <div className="font-mono" style={{ fontSize: '22px', fontWeight: 800, color: tab.color }}>
+                  {tab.count}
+                </div>
               </div>
-            </div>
-            <div className="ticket-card" style={{ padding: '12px', textAlign: 'center' }}>
-              <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>SETTLED</div>
-              <div className="font-mono" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--success)' }}>
-                {stats.settled}
-              </div>
-            </div>
-            <div className="ticket-card" style={{ padding: '12px', textAlign: 'center' }}>
-              <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>CANCELLED</div>
-              <div className="font-mono" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--danger)' }}>
-                {stats.cancelled}
-              </div>
-            </div>
-            <div className="ticket-card" style={{ padding: '12px', textAlign: 'center' }}>
-              <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>EXHAUSTED</div>
-              <div className="font-mono" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--warning)' }}>
-                {stats.exhausted}
-              </div>
-            </div>
-            <div className="ticket-card" style={{ padding: '12px', textAlign: 'center' }}>
-              <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>REFUNDED</div>
-              <div className="font-mono" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-faint)' }}>
-                {stats.refunded}
-              </div>
-            </div>
+            ))}
           </div>
         )}
 
-        {/* Filter Pills */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-          {(['ALL', 'OPEN', 'SETTLED', 'EXHAUSTED', 'CANCELLED'] as const).map((st) => (
+        {/* Filter Chips with counts */}
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '22px', flexWrap: 'wrap' }}>
+          {(['ALL', 'OPEN', 'SETTLED', 'CANCELLED', 'EXHAUSTED'] as const).map((st) => (
             <button
               key={st}
               onClick={() => setFilter(st)}
               className={filter === st ? 'btn btn-primary' : 'btn btn-secondary'}
-              style={{ fontSize: '12px', padding: '6px 14px' }}
+              style={{ fontSize: '12px', padding: '5px 12px', minHeight: '34px', height: '34px' }}
             >
-              {st}
+              <span>{st}</span>
+              <span className="docket-tab" style={{ padding: '1px 5px', fontSize: '10px', background: 'transparent' }}>
+                {getStatusCount(st)}
+              </span>
             </button>
           ))}
         </div>
 
-        {/* Bounties List */}
+        {/* Bounties List / Empty State */}
         {loading && bounties.length === 0 ? (
           <div className="ticket-card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
             Loading on-chain records...
           </div>
         ) : filtered.length === 0 ? (
-          <div className="ticket-card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
-            No bounties match filter.
+          <div className="ticket-card" style={{ padding: '48px 20px', textAlign: 'center' }}>
+            <Inbox size={32} style={{ color: 'var(--text-muted)', margin: '0 auto 12px auto' }} />
+            <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
+              No bounty tickets match selected criteria.
+            </div>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
             {filtered.map((b) => {
-              const attemptsLeft = Math.max(0, 3 - parseInt(b.attempts || '0', 10));
               const badgeClass =
                 b.status === 'OPEN'
                   ? 'badge-open'
@@ -152,14 +185,12 @@ export const BountyBoardPage: React.FC = () => {
                   key={b.id}
                   to={`/app/bounty/${b.id}`}
                   className="ticket-card"
-                  style={{ display: 'block', transition: 'border-color 0.15s ease' }}
+                  style={{ display: 'block' }}
                 >
                   <div className="ticket-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span className="font-mono" style={{ fontWeight: 800, color: 'var(--primary)' }}>
-                        #{b.id}
-                      </span>
-                      <span style={{ fontWeight: 700, fontSize: '16px' }}>{b.title}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span className="docket-tab">#{b.id}</span>
+                      <span style={{ fontWeight: 600, fontSize: '16px' }}>{b.title}</span>
                     </div>
                     <span className={`badge ${badgeClass}`}>{b.status}</span>
                   </div>
@@ -172,6 +203,7 @@ export const BountyBoardPage: React.FC = () => {
                       alignItems: 'center',
                       flexWrap: 'wrap',
                       gap: '12px',
+                      padding: '14px 18px',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '13px' }}>
@@ -180,9 +212,9 @@ export const BountyBoardPage: React.FC = () => {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '13px' }}>
-                      <div className="font-mono">
-                        <span style={{ color: 'var(--text-muted)' }}>Attempts: </span>
-                        <strong>{b.attempts}/3</strong> ({attemptsLeft} left)
+                      <div className="font-mono" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>Attempts:</span>
+                        {renderAttemptDots(b.attempts)}
                       </div>
                       <div
                         className="font-mono"
