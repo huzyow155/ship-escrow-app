@@ -27,7 +27,7 @@ export const BountyDetailPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   // Submit Work Form State
-  const [prUrl, setPrUrl] = useState<string>('https://github.com/huzyow155/ship-escrow-fixtures/pull/2');
+  const [prUrl, setPrUrl] = useState<string>('https://github.com/hypercybers99/ship-escrow-fixtures/pull/2');
   const [headSha, setHeadSha] = useState<string>('5db0441e76af93606fd82feebbe49c5a2f145326');
   const [fetchingSha, setFetchingSha] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -167,7 +167,8 @@ export const BountyDetailPage: React.FC = () => {
         checkBountyId.trim(),
         checkCriteriaHash.trim(),
         checkHeadSha.trim(),
-        checkDev.trim()
+        checkDev.trim(),
+        25
       );
       setCheckResult(res);
     } catch (err) {
@@ -467,8 +468,13 @@ export const BountyDetailPage: React.FC = () => {
                         </a>
                       </div>
                       <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                        Dev: {sub.dev.slice(0, 8)}... | Head: {sub.head_sha.slice(0, 8)}... | Evidence: {sub.evidence_sha16 || 'n/a'}
+                        Dev: {sub.dev.slice(0, 8)}... | Head: {sub.head_sha.slice(0, 8)}...{sub.packet_sha256 ? ` | Packet: ${sub.packet_sha256.slice(0, 16)}...` : sub.evidence_sha16 ? ` | Evidence: ${sub.evidence_sha16}` : ''}
                       </div>
+                      {sub.criterion_results && sub.criterion_results.length > 0 && (
+                        <div className="font-mono" style={{ fontSize: '11px', color: 'var(--text-main)', marginTop: '2px' }}>
+                          Labels: [{sub.criterion_results.join(', ')}]
+                        </div>
+                      )}
                       {sub.gate && (
                         <div style={{ fontSize: '12px', color: 'var(--stamp-ochre)', marginTop: '4px' }}>
                           Hard Gate: <strong>{sub.gate}</strong>
@@ -484,13 +490,13 @@ export const BountyDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Submit Work Form (when OPEN and attempts < 3) */}
-        {bounty.status === 'OPEN' && parseInt(bounty.attempts, 10) < 3 && (
+        {/* Submit Work Form (when OPEN and attempts < attempt_limit) */}
+        {bounty.status === 'OPEN' && parseInt(bounty.attempts, 10) < (bounty.attempt_limit || 6) && (
           <div className="ticket-card">
             <div className="ticket-header">
               <span style={{ fontWeight: 700 }}>Submit Pull Request Work</span>
               <span className="docket-tab">
-                Attempt {parseInt(bounty.attempts, 10) + 1} of 3
+                Attempt {parseInt(bounty.attempts, 10) + 1} of {bounty.attempt_limit || 6}
               </span>
             </div>
 

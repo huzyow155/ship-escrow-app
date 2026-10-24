@@ -9,7 +9,7 @@ export const CreateBountyPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState<string>('Implement slugify helper');
-  const [ownerRepo, setOwnerRepo] = useState<string>('huzyow155/ship-escrow-fixtures');
+  const [ownerRepo, setOwnerRepo] = useState<string>('hypercybers99/ship-escrow-fixtures');
   const [criteria, setCriteria] = useState<Criterion[]>([
     {
       level: 'MUST',

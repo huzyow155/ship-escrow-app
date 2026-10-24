@@ -90,8 +90,18 @@ export interface WriteResult {
 
 export async function syncBountyReputation(
   bountyId: string,
-  onElapsed?: (sec: number) => void
+  minPayoutPctOrOnElapsed?: number | ((sec: number) => void),
+  onElapsedParam?: (sec: number) => void
 ): Promise<WriteResult> {
+  let minPayoutPct = 25;
+  let onElapsed: ((sec: number) => void) | undefined = onElapsedParam;
+
+  if (typeof minPayoutPctOrOnElapsed === 'function') {
+    onElapsed = minPayoutPctOrOnElapsed;
+  } else if (typeof minPayoutPctOrOnElapsed === 'number') {
+    minPayoutPct = minPayoutPctOrOnElapsed;
+  }
+
   await ensureStudionetNetwork();
   const ethereum = (window as any).ethereum;
   const accounts: string[] = await ethereum.request({ method: 'eth_requestAccounts' });
@@ -107,7 +117,7 @@ export async function syncBountyReputation(
   let timer: any = null;
   if (onElapsed) {
     timer = setInterval(() => {
-      onElapsed(Math.floor((Date.now() - startTime) / 1000));
+      onElapsed!(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
   }
 
@@ -115,7 +125,7 @@ export async function syncBountyReputation(
     const txHash = await client.writeContract({
       address: SHIP_REPUTATION.address,
       functionName: 'sync',
-      args: [bountyId],
+      args: [bountyId, minPayoutPct],
       value: 0n,
     });
 

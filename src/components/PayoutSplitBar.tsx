@@ -6,8 +6,8 @@ interface Props {
 }
 
 export const PayoutSplitBar: React.FC<Props> = ({ settlement }) => {
-  const devUnits = parseInt(settlement.dev_amount, 10) || 0;
-  const creatorUnits = parseInt(settlement.creator_amount, 10) || 0;
+  const devUnits = parseInt(settlement.dev_amount || settlement.final_payout_amount || '0', 10) || 0;
+  const creatorUnits = parseInt(settlement.creator_amount || settlement.refund_amount || '0', 10) || 0;
   const total = devUnits + creatorUnits;
 
   const devPct = total > 0 ? Math.round((devUnits / total) * 100) : 0;

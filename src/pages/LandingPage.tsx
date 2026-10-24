@@ -15,7 +15,7 @@ export const LandingPage: React.FC = () => {
   }>({
     id: '14',
     title: 'Implement slugify(text) in src/slug.py',
-    repo: 'huzyow155/ship-escrow-fixtures',
+    repo: 'hypercybers99/ship-escrow-fixtures',
     reward: '1000',
     status: 'SETTLED',
     source: 'saved',
@@ -28,7 +28,7 @@ export const LandingPage: React.FC = () => {
           setBounty14({
             id: data.id || '14',
             title: data.title || 'Implement slugify(text) in src/slug.py',
-            repo: data.owner_repo || 'huzyow155/ship-escrow-fixtures',
+            repo: data.owner_repo || 'hypercybers99/ship-escrow-fixtures',
             reward: data.amount || '1000',
             status: data.status || 'SETTLED',
             source: 'chain',

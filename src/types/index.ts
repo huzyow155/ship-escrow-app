@@ -14,7 +14,10 @@ export interface Bounty {
   amount: string;
   status: BountyStatus;
   attempts: string;
-  seq: string;
+  dev_attempt_limit?: number;
+  attempt_limit?: number;
+  created_at?: string;
+  seq?: string;
   schema_version: string;
 }
 
@@ -26,7 +29,11 @@ export interface Submission {
   pr_number: string;
   head_sha: string;
   verdict: BountyVerdict;
-  evidence_sha16: string;
+  evidence_sha16?: string;
+  packet_sha256?: string;
+  packet?: any;
+  payout_pct?: string;
+  dev_attempt?: string;
   criterion_results: string[];
   gate: string;
   attempt: string;
@@ -38,14 +45,18 @@ export interface Settlement {
   bounty_id: string;
   submission_id: string;
   dev: string;
-  creator: string;
-  dev_amount: string;
-  creator_amount: string;
+  creator?: string;
+  dev_amount?: string;
+  creator_amount?: string;
+  final_payout_amount?: string;
+  final_payout_pct?: string;
+  refund_amount?: string;
+  settled_at?: string;
   verdict: BountyVerdict;
   criteria_hash: string;
   head_sha: string;
-  pr_url: string;
-  evidence_sha16: string;
+  pr_url?: string;
+  evidence_sha16?: string;
   schema_version: string;
 }
 
@@ -75,6 +86,7 @@ export interface EscrowStats {
   verdict_release_25: number;
   verdict_refund: number;
   verdict_review: number;
+  total_bonds_forfeited?: number;
   schema_version: string;
 }
 

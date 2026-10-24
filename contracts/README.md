@@ -1,9 +1,9 @@
 # Contracts Reference
 
-Source: `huzyow155/ship-escrow-genlayer`  
-Commit: `afc80e74dc809de846bda0dc70c54fd76c706e06` (also current on `52f6d85a50cff055b3677ecb910302a22c9ac3ce`)  
+Source: `hypercybers99/ship-escrow-genlayer`  
+Tag Reference: `se-v2-4`  
 Status: **Read-only reference copy (ban tham chieu chi doc)**  
 
 These files are byte-for-byte exact copies of the deployed Intelligent Contracts on GenLayer Studionet (Chain ID 61999).
-- `ShipEscrow.py`: Primary bounty escrow contract (`0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`)
-- `ShipReputation.py`: Cross-contract reputation consumer (`0x55c56f0dfFb8227345814A37c68394b05c26E901`)
+- `ShipEscrowV2.py`: Primary bounty escrow contract (`0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF`, SHA256: `c00b1366e960882367bf1f3e3c99b975691c28cb29750b7e16a0646e5e353048`)
+- `ShipReputationV2.py`: Cross-contract reputation consumer (`0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81`, SHA256: `12e4c5e9cf8f480823ff778181b6a0d50ae7d37ec7c3a5b079cf6275779d1ed7`)

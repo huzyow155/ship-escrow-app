@@ -123,6 +123,12 @@ export async function listSubmissionsByDev(addr: string, limit: number = 10): Pr
 
 export async function latestSubmissionBy(addr: string): Promise<Submission | null> {
   try {
+    // V2: Query developer's submission index
+    const subIds = await listSubmissionsByDev(addr, 1);
+    if (subIds && subIds.length > 0) {
+      return await getSubmission(subIds[0]);
+    }
+    // Fallback if legacy contract
     const raw = await readOnlyClient.readContract({
       address: SHIP_ESCROW.address,
       functionName: 'latest_submission_by',
@@ -132,6 +138,49 @@ export async function latestSubmissionBy(addr: string): Promise<Submission | nul
     return JSON.parse(raw);
   } catch (err) {
     console.error(`Error getting latest submission for ${addr}:`, err);
+    return null;
+  }
+}
+
+export async function hasClaimedDemo(addr: string): Promise<boolean> {
+  try {
+    const res = await readOnlyClient.readContract({
+      address: SHIP_ESCROW.address,
+      functionName: 'has_claimed_demo',
+      args: [addr],
+    });
+    return Boolean(res);
+  } catch (err) {
+    console.error(`Error checking demo claim for ${addr}:`, err);
+    return false;
+  }
+}
+
+export async function getDevAttempts(bountyId: string, dev: string): Promise<number> {
+  try {
+    const res = await readOnlyClient.readContract({
+      address: SHIP_ESCROW.address,
+      functionName: 'get_dev_attempts',
+      args: [bountyId, dev],
+    });
+    return Number(res || 0);
+  } catch (err) {
+    console.error(`Error getting dev attempts for bounty ${bountyId} / dev ${dev}:`, err);
+    return 0;
+  }
+}
+
+export async function getLedgerInvariant(): Promise<any> {
+  try {
+    const raw = await readOnlyClient.readContract({
+      address: SHIP_ESCROW.address,
+      functionName: 'get_ledger_invariant',
+      args: [],
+    });
+    if (typeof raw === 'string') return JSON.parse(raw);
+    return raw;
+  } catch (err) {
+    console.error('Error reading ledger invariant:', err);
     return null;
   }
 }
@@ -149,7 +198,7 @@ export async function getStats(): Promise<EscrowStats> {
     verdict_release_25: 0,
     verdict_refund: 0,
     verdict_review: 0,
-    schema_version: '1',
+    schema_version: '2',
   };
 
   try {
@@ -174,7 +223,7 @@ export async function getLimits(): Promise<EscrowLimits> {
     title_max_chars: 80,
     amount_min: 1,
     amount_max: 1000000,
-    max_attempts: 3,
+    max_attempts: 6,
     max_criteria: 5,
     min_criteria: 1,
     diff_cap_chars: 14000,
@@ -208,13 +257,14 @@ export async function isSettledFor(
   bountyId: string,
   criteriaHash: string,
   headSha: string,
-  dev: string
+  dev: string,
+  minPayoutPct: number = 25
 ): Promise<boolean> {
   try {
     const res = await readOnlyClient.readContract({
       address: SHIP_ESCROW.address,
       functionName: 'is_settled_for',
-      args: [bountyId, criteriaHash, headSha, dev],
+      args: [bountyId, criteriaHash, headSha, dev, minPayoutPct],
     });
     return Boolean(res);
   } catch (err) {

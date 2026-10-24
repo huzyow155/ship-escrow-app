@@ -33,17 +33,17 @@ export const NETWORK_CONFIG: NetworkConfig = {
 };
 
 export const SHIP_ESCROW: ContractDeployment = {
-  name: 'ShipEscrow',
-  address: '0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F',
-  deployTxHash: '0x0dcfc833e0379f1259cfcdad6ca1a77c0783ba8a2eeb461e32c314a7086c16c3',
-  sourceSha256: '2de0496eea2d940dd1985dcfa8e766abf0fbb56d36220297ddc6683b5f118b54',
-  explorerUrl: 'https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F',
+  name: 'ShipEscrowV2',
+  address: '0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF',
+  deployTxHash: '0xa47ecee0c8108c12baf8a71acfb87ce3aff22ee2aa85d73bfa0e26a67d67d733',
+  sourceSha256: 'c00b1366e960882367bf1f3e3c99b975691c28cb29750b7e16a0646e5e353048',
+  explorerUrl: 'https://explorer-studio.genlayer.com/address/0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF',
 };
 
 export const SHIP_REPUTATION: ContractDeployment = {
-  name: 'ShipReputation',
-  address: '0x55c56f0dfFb8227345814A37c68394b05c26E901',
-  deployTxHash: '0xca13e68ba0743939041b61985062b39fa95ef54c9134c5d47c65441dc03b1602',
-  sourceSha256: '6dc14ae2714d93cae2fe152112ca0f9ff69fa58284f25b77ea02fa9db647381e',
-  explorerUrl: 'https://explorer-studio.genlayer.com/address/0x55c56f0dfFb8227345814A37c68394b05c26E901',
+  name: 'ShipReputationV2',
+  address: '0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81',
+  deployTxHash: '0x5046e6d602dac897980c852b651aa9ab44fea2a0a7762a7dd34523742f5a3b5c',
+  sourceSha256: '12e4c5e9cf8f480823ff778181b6a0d50ae7d37ec7c3a5b079cf6275779d1ed7',
+  explorerUrl: 'https://explorer-studio.genlayer.com/address/0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81',
 };

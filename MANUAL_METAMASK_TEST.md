@@ -21,7 +21,7 @@ This document provides step-by-step instructions for end-to-end manual verificat
 2. Connect Account 1 (Creator).
 3. Fill in the bounty manifest:
    - **Title**: `Slugify Helper Manifest`
-   - **Target Repository**: `huzyow155/ship-escrow-fixtures`
+   - **Target Repository**: `hypercybers99/ship-escrow-fixtures`
    - **Acceptance Criteria**:
      - MUST: `Adds a function slugify(text) in src/slug.py that lowercases and collapses runs of non-alphanumeric characters into a single hyphen`
      - MUST: `Adds at least one test under tests/ that calls slugify`
@@ -38,7 +38,7 @@ This document provides step-by-step instructions for end-to-end manual verificat
 ## Step 3: Submit Work (Dev Perspective)
 1. Switch MetaMask to Account 2 (Dev).
 2. On the Bounty Detail page, scroll to the **Submit Work for Evaluation** section.
-3. Enter PR URL: `https://github.com/huzyow155/ship-escrow-fixtures/pull/2`.
+3. Enter PR URL: `https://github.com/hypercybers99/ship-escrow-fixtures/pull/2`.
 4. Click **Fetch Head SHA from GitHub**. The input auto-fills with `5db0441e76af93606fd82feebbe49c5a2f145326` directly via public GitHub API.
 5. Click **Submit Work for Consensus**. Approve the transaction in MetaMask.
 6. Observe the elapsed-seconds timer (evaluating diff + LLM criteria classification takes ~18–40 seconds).
@@ -70,7 +70,7 @@ This document provides step-by-step instructions for end-to-end manual verificat
 1. Navigate to `/app/reputation`.
 2. Connect any account or query the Dev address (`0x...`).
 3. Under the **Sync Bounty Settlement** card, enter the settled Bounty ID.
-4. Click **Sync Settlement** and approve the MetaMask write transaction on ShipReputation (`0x55c56f0dfFb8227345814A37c68394b05c26E901`).
+4. Click **Sync Settlement** and approve the MetaMask write transaction on ShipReputation (`0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81`).
 5. Once confirmed, verify that the Dev score increments `RELEASE_100: 1`.
 
 ---

@@ -1,18 +1,18 @@
 # Ship Escrow DApp
 
 Web app (Preview): https://ship-escrow-app.vercel.app  
-Contract repository: https://github.com/huzyow155/ship-escrow-genlayer  
-Fixtures repository: https://github.com/huzyow155/ship-escrow-fixtures  
+Contract repository: https://github.com/hypercybers99/ship-escrow-genlayer  
+Fixtures repository: https://github.com/hypercybers99/ship-escrow-fixtures  
 
 ![Ship Escrow Customs Manifest Preview](docs/design/after/landing_1440px_light.png)
 
 Web app for GitHub PR bounties on GenLayer Studionet (Preview). Credits are tracked in a contract ledger; no tokens are locked.
 
 Contracts deployed on **GenLayer Studionet Preview**:
-- **ShipEscrow**: [`0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`](https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F)
-- **ShipReputation**: [`0x55c56f0dfFb8227345814A37c68394b05c26E901`](https://explorer-studio.genlayer.com/address/0x55c56f0dfFb8227345814A37c68394b05c26E901)
-- **Contract Repository**: [huzyow155/ship-escrow-genlayer](https://github.com/huzyow155/ship-escrow-genlayer)
-- **Fixtures Repository**: [huzyow155/ship-escrow-fixtures](https://github.com/huzyow155/ship-escrow-fixtures)
+- **ShipEscrowV2**: [`0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF`](https://explorer-studio.genlayer.com/address/0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF)
+- **ShipReputationV2**: [`0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81`](https://explorer-studio.genlayer.com/address/0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81)
+- **Contract Repository (Tag se-v2-4)**: [hypercybers99/ship-escrow-genlayer](https://github.com/hypercybers99/ship-escrow-genlayer/tree/se-v2-4)
+- **Fixtures Repository**: [hypercybers99/ship-escrow-fixtures](https://github.com/hypercybers99/ship-escrow-fixtures)
 
 ---
 
@@ -54,7 +54,7 @@ npm test
 ```
 The test suite validates:
 1. Exact SHA-256 integrity of reference contracts against deployed source hashes.
-2. Complete catalog mapping of all 49 UserError raises in Python contracts.
+2. Complete catalog mapping of all UserError raises in Python contracts.
 3. Pure TypeScript criteria hash computation against on-chain view output.
 4. 5,000-case fuzz verification of the `decide()` scoring function against an independent oracle.
 
@@ -71,4 +71,4 @@ Follow the 8-step manual testing guide in [MANUAL_METAMASK_TEST.md](MANUAL_METAM
 
 ## License
 
-MIT License • Copyright (c) 2026 Hyper (huzyow155).
+MIT License - Copyright (c) 2026 Hyper (hypercybers99).

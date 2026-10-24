@@ -1,6 +1,6 @@
 /**
- * Complete catalog of UserError strings from ShipEscrow.py and ShipReputation.py
- * Verified against docs/ERROR_CODES.md and contracts source.
+ * Complete catalog of UserError strings from ShipEscrowV2.py and ShipReputationV2.py
+ * Verified against on-chain contract source code.
  */
 
 export interface ContractErrorDefinition {
@@ -66,6 +66,18 @@ export const CONTRACT_ERRORS: ContractErrorDefinition[] = [
     category: 'creation',
     userExplanation: 'Required path prefixes cannot be empty, start with "/", or contain "..".',
   },
+  {
+    code: 'ERR_INSUFFICIENT_CREDITS',
+    exactMessage: 'Insufficient credits',
+    category: 'creation',
+    userExplanation: 'Creator does not have enough credits in their balance to escrow this bounty amount.',
+  },
+  {
+    code: 'ERR_DEMO_ALREADY_CLAIMED',
+    exactMessage: 'Demo credits already claimed',
+    category: 'creation',
+    userExplanation: 'This account address has already claimed the one-time 1,000 demo credits.',
+  },
 
   // --- Submission Pre-Execution ---
   {
@@ -87,10 +99,22 @@ export const CONTRACT_ERRORS: ContractErrorDefinition[] = [
     userExplanation: 'Bounty creators cannot submit work to their own bounties.',
   },
   {
+    code: 'ERR_SUBMISSION_BOND',
+    exactMessage: 'Insufficient credits for submission bond',
+    category: 'submission',
+    userExplanation: 'A refundable submission bond of 50 credits is required to submit work.',
+  },
+  {
+    code: 'ERR_DEV_ATTEMPT_LIMIT',
+    exactMessage: 'Developer attempt limit reached',
+    category: 'submission',
+    userExplanation: 'Each developer address is limited to at most 2 submissions per bounty.',
+  },
+  {
     code: 'ERR_ATTEMPT_LIMIT',
     exactMessage: 'Attempt limit reached',
     category: 'submission',
-    userExplanation: 'This bounty has reached the maximum of 3 evaluation attempts.',
+    userExplanation: 'This bounty has reached the maximum of 6 total evaluation attempts.',
   },
   {
     code: 'ERR_INVALID_HEAD_SHA',
@@ -138,13 +162,43 @@ export const CONTRACT_ERRORS: ContractErrorDefinition[] = [
     code: 'ERR_PR_QUERY_FRAGMENT',
     exactMessage: 'PR URL must not contain query or fragment',
     category: 'submission',
-    userExplanation: 'Pull request URL cannot include query parameters (?) or anchors (#).',
+    userExplanation: 'Pull request URL cannot include query parameters or #fragments.',
   },
   {
     code: 'ERR_DUPLICATE_SUBMISSION',
-    exactMessage: /^Duplicate submission for head sha: existing submission/,
+    exactMessage: /^Duplicate submission for head sha: existing submission \d+$/,
     category: 'submission',
-    userExplanation: 'This commit head SHA has already been submitted to this bounty.',
+    userExplanation: 'This exact commit HEAD SHA has already been submitted to this bounty.',
+  },
+  {
+    code: 'ERR_METADATA_UNAVAILABLE',
+    exactMessage: 'Pull request metadata unavailable',
+    category: 'submission',
+    userExplanation: 'Validators could not retrieve pull request metadata from GitHub REST API.',
+  },
+  {
+    code: 'ERR_PR_NOT_OPEN_OR_MERGED',
+    exactMessage: 'Pull request is not open or merged',
+    category: 'submission',
+    userExplanation: 'The pull request must be in OPEN or MERGED state on GitHub (closed unmerged PRs are rejected).',
+  },
+  {
+    code: 'ERR_SAME_REPOSITORY',
+    exactMessage: 'Pull request must be same-repository',
+    category: 'submission',
+    userExplanation: 'Pull request head repository must match base repository (cross-fork PRs not accepted).',
+  },
+  {
+    code: 'ERR_HEAD_SHA_MISMATCH',
+    exactMessage: 'Head sha does not match the pull request head',
+    category: 'submission',
+    userExplanation: 'The submitted head SHA does not match the authoritative current head commit of the PR.',
+  },
+  {
+    code: 'ERR_WALLET_NOT_BOUND',
+    exactMessage: 'Pull request is not bound to the submitting wallet',
+    category: 'submission',
+    userExplanation: 'PR description must contain "ship-escrow-wallet: 0x<caller_address>" marker.',
   },
 
   // --- Network & Fetch ---
@@ -152,19 +206,13 @@ export const CONTRACT_ERRORS: ContractErrorDefinition[] = [
     code: 'ERR_GITHUB_UNREACHABLE',
     exactMessage: 'GitHub source unreachable',
     category: 'network',
-    userExplanation: 'Validators could not fetch the PR diff from GitHub over HTTPS.',
-  },
-  {
-    code: 'ERR_PR_404',
-    exactMessage: 'PR not found on GitHub (HTTP 404)',
-    category: 'network',
-    userExplanation: 'The specified pull request does not exist or repository is private (HTTP 404).',
+    userExplanation: 'Validators could not fetch the PR compare diff from GitHub over HTTPS.',
   },
   {
     code: 'ERR_DIFF_EMPTY',
     exactMessage: 'PR diff is empty',
     category: 'network',
-    userExplanation: 'The pull request diff contains no line additions or deletions.',
+    userExplanation: 'The pull request compare diff contains no line additions or deletions.',
   },
 
   // --- Lifecycle & Refunds ---
@@ -173,6 +221,12 @@ export const CONTRACT_ERRORS: ContractErrorDefinition[] = [
     exactMessage: 'Only bounty creator can cancel',
     category: 'lifecycle',
     userExplanation: 'Only the account that created this bounty can cancel it.',
+  },
+  {
+    code: 'ERR_CANCEL_AFTER_SUBMISSIONS',
+    exactMessage: 'Cannot cancel bounty after submissions have been made',
+    category: 'lifecycle',
+    userExplanation: 'A bounty cannot be cancelled once one or more submissions have been evaluated.',
   },
   {
     code: 'ERR_ONLY_CREATOR_REFUND',
@@ -184,7 +238,7 @@ export const CONTRACT_ERRORS: ContractErrorDefinition[] = [
     code: 'ERR_BOUNTY_NOT_EXHAUSTED',
     exactMessage: 'Bounty is not exhausted',
     category: 'lifecycle',
-    userExplanation: 'A bounty must have reached 3 failed attempts before it can be refunded.',
+    userExplanation: 'A bounty must have reached 6 total attempts without settling before it is exhausted.',
   },
 
   // --- Reputation Contract ---
@@ -223,6 +277,12 @@ export const CONTRACT_ERRORS: ContractErrorDefinition[] = [
     exactMessage: 'Invalid settlement amounts',
     category: 'reputation',
     userExplanation: 'Settlement record contains invalid numeric credit amounts.',
+  },
+  {
+    code: 'ERR_REP_LOW_PAYOUT_THRESHOLD',
+    exactMessage: 'Settlement payout percentage below required threshold',
+    category: 'reputation',
+    userExplanation: 'The settlement payout percentage is below the minimum required threshold for reputation tracking.',
   },
 ];
 

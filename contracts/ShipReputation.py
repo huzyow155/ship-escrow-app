@@ -9,7 +9,8 @@ def canonical_json(obj) -> str:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"))
 
 
-class ShipReputation(gl.Contract):
+class ShipReputationV2(gl.Contract):
+    __gl_contract__ = True
     escrow_address: Address
     processed: TreeMap[str, str]
     dev_scores: TreeMap[str, str]
@@ -30,10 +31,10 @@ class ShipReputation(gl.Contract):
         if addr_lower in self.dev_scores:
             return self.dev_scores[addr_lower]
         return canonical_json({
-            "schema_version": "1",
+            "best_verdict_counts": {},
+            "schema_version": "2",
             "settled_count": 0,
             "units_earned": "0",
-            "best_verdict_counts": {},
         })
 
     @gl.public.view
@@ -42,8 +43,8 @@ class ShipReputation(gl.Contract):
         if addr_lower in self.creator_scores:
             return self.creator_scores[addr_lower]
         return canonical_json({
-            "schema_version": "1",
             "bounties_settled": 0,
+            "schema_version": "2",
             "units_paid": "0",
             "units_refunded": "0",
         })
@@ -59,7 +60,7 @@ class ShipReputation(gl.Contract):
         return items[:lim]
 
     @gl.public.write
-    def sync(self, bounty_id: str) -> None:
+    def sync(self, bounty_id: str, min_payout_pct: int = 25) -> None:
         bid = str(bounty_id).strip()
         if not bid:
             raise gl.vm.UserError("Bounty id cannot be empty")
@@ -83,24 +84,32 @@ class ShipReputation(gl.Contract):
         criteria_hash = settlement.get("criteria_hash", "").strip()
         head_sha = settlement.get("head_sha", "").strip()
         verdict = settlement.get("verdict", "").strip()
+        packet_sha256 = settlement.get("packet_sha256", "").strip()
         dev_amt_str = settlement.get("dev_amount", "0")
         creator_amt_str = settlement.get("creator_amount", "0")
+        payout_pct_str = settlement.get("payout_pct", "0")
 
-        if not dev or not criteria_hash or not head_sha:
+        if not dev or not criteria_hash or not head_sha or not packet_sha256:
             raise gl.vm.UserError("Invalid settlement record: missing required fields")
 
         try:
             dev_amt = int(dev_amt_str)
             creator_amt = int(creator_amt_str)
+            payout_pct = int(payout_pct_str)
         except Exception:
             raise gl.vm.UserError("Invalid settlement amounts")
 
+        # Refusal check: payout percentage below required threshold
+        clamped_min = min(max(25, min_payout_pct), 100)
+        if payout_pct < clamped_min:
+            raise gl.vm.UserError("Settlement payout percentage below required threshold")
+
         # 1. Update Dev Score
         dev_score = {
-            "schema_version": "1",
+            "best_verdict_counts": {},
+            "schema_version": "2",
             "settled_count": 0,
             "units_earned": "0",
-            "best_verdict_counts": {},
         }
         if dev in self.dev_scores:
             try:
@@ -120,8 +129,8 @@ class ShipReputation(gl.Contract):
 
         # 2. Update Creator Score
         creator_score = {
-            "schema_version": "1",
             "bounties_settled": 0,
+            "schema_version": "2",
             "units_paid": "0",
             "units_refunded": "0",
         }
